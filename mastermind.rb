@@ -10,19 +10,25 @@ module Mastermind
   class Human
     def input_code
       puts 'Please enter your code:'
+
+      result = Array.new(4)
       4.times do |num|
-        print "Position #{num}: "
-        input = input_color
+        print "Position #{num + 1}: "
+        result[num] = input_color
       end
+
+      result
     end
 
     private
 
     def input_color
+      input = ''
+
       loop do
         input = gets.chomp.downcase
 
-        break if @@COLORS.include?(input)
+        break if COLORS.include?(input)
 
         puts 'Invalid input, please try again:'
       end
