@@ -37,7 +37,14 @@ module Mastermind
     end
   end
 
+  # This class represents the CPU
   class Cpu
+    def generate_code
+      code = Code.new
+      4.times do
+        code.push(COLORS.sample)
+      end
+    end
   end
 
   # This class represents a 4-color code
