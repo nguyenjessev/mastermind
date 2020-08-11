@@ -1,9 +1,27 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 module Mastermind
   COLORS = %w[red blue green yellow black white].freeze
 
+  # This class represents the game state
   class Game
+    attr_accessor :codebreaker, :codemaker
+
+    def play_game
+      setup_game
+    end
+
+    private
+
+    def setup_game
+      @codebreaker = Human.new
+      @codemaker = Cpu.new
+      @secret_code = codemaker.generate_code
+      puts 'The CPU has generated a secret code.'
+      binding.pry
+    end
   end
 
   # This class represents a human player
@@ -42,8 +60,10 @@ module Mastermind
     def generate_code
       code = Code.new
       4.times do
-        code.push(COLORS.sample)
+        code.code.push(COLORS.sample)
       end
+
+      code
     end
   end
 
@@ -56,3 +76,6 @@ module Mastermind
     end
   end
 end
+
+game = Mastermind::Game.new
+game.play_game
