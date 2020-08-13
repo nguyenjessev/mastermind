@@ -19,16 +19,12 @@ module Mastermind
       @codebreaker = Human.new
       @codemaker = Cpu.new
       @secret_code = codemaker.generate_code
-      puts 'The CPU has generated a secret code.'
-      binding.pry
     end
   end
 
   # This class represents a human player
   class Human
     def input_code
-      puts 'Please enter your code:'
-
       result = Array.new(4)
       4.times do |num|
         print "Position #{num + 1}: "
@@ -36,6 +32,17 @@ module Mastermind
       end
 
       result
+    end
+
+    def guess_code
+      puts 'Enter your guess, one color at a time. Valid colors are red, green, blue, yellow, black, and white:'
+      input_code
+    end
+
+    def generate_code
+      puts 'You are the codemaker! Enter your secret code one color at a time. Valid colors are '\
+           'red, green, blue, yellow, black, and white:'
+      input_code
     end
 
     private
@@ -63,6 +70,7 @@ module Mastermind
         code.code.push(COLORS.sample)
       end
 
+      puts 'The CPU has generated a secret code.'
       code
     end
   end
