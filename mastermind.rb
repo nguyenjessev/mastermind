@@ -8,12 +8,55 @@ module Mastermind
   # This class represents the game state
   class Game
     attr_accessor :codebreaker, :codemaker
+    attr_reader :secret_code
 
     def play_game
       setup_game
+
+      12.times do |num|
+        print_turns(num)
+
+        guess = codebreaker.guess_code
+        result = verify_guess(secret_code.code, guess.code)
+        break if result
+      end
+
+      end_game
     end
 
-    private
+    def print_turns(num)
+      if num < 11
+        puts "There are #{12 - num} turns remaining."
+      else
+        puts 'There is 1 turn remaining.'
+      end
+    end
+
+    def end_game; end
+
+    def verify_guess(answer, guess)
+      return true if answer == guess
+
+      result = { correct: 0, wrong_position: 0 }
+
+      answer = answer.clone
+      guess = guess.clone
+      guess.each_with_index do |color, index|
+        if color == answer[index]
+          result[:correct] += 1
+          answer[index] = nil
+          next
+        end
+
+        index = answer.index(color)
+        if index && answer[index] != guess[index]
+          result[:wrong_position] += 1
+          answer[answer.index(color)] = nil
+        end
+      end
+
+      result
+    end
 
     def setup_game
       @codebreaker = Human.new
@@ -25,10 +68,10 @@ module Mastermind
   # This class represents a human player
   class Human
     def input_code
-      result = Array.new(4)
+      result = Code.new
       4.times do |num|
         print "Position #{num + 1}: "
-        result[num] = input_color
+        result.code[num] = input_color
       end
 
       result
