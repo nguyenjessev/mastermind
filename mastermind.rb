@@ -157,11 +157,12 @@ module Mastermind
 
     def guess_code
       guess = []
+
       possible_colors.each_with_index do |pos, index|
         guess[index] = if (pos & must_include).to_a.empty?
                          possible_colors[index].sample
                        else
-                         (pos & must_include)[0]
+                         must_include.delete((pos & must_include)[0])
                        end
       end
       puts "CPU guess: #{guess.join(' ')}"
