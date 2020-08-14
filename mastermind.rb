@@ -12,12 +12,12 @@ module Mastermind
 
     def play_game
       setup_game
-      end_message = "\nSorry, you lost!"
+      end_message = "\nNo turns left! Game over!"
       12.times do |num|
         result = play_round(num)
         codebreaker.receive_result(result)
         if result == %w[O O O O]
-          end_message = "\nCorrect! You win!"
+          end_message = "\nCorrect! Game over!"
           break
         end
       end
@@ -138,10 +138,11 @@ module Mastermind
 
   # This class represents the CPU
   class Cpu
-    attr_accessor :possible_colors, :last_result
+    attr_accessor :possible_colors, :last_guess, :must_include
 
     def initialize
-      @possible_colors = Array.new(4) { COLORS.clone }
+      @possible_colors = Array.new(4) { %w[red green blue yellow black white] }
+      @must_include = []
     end
 
     def generate_code
@@ -155,15 +156,29 @@ module Mastermind
     end
 
     def guess_code
-      guess = possible_colors.map(&:sample)
+      guess = []
+      possible_colors.each_with_index do |pos, index|
+        guess[index] = if (pos & must_include).to_a.empty?
+                         possible_colors[index].sample
+                       else
+                         (pos & must_include)[0]
+                       end
+      end
       puts "CPU guess: #{guess.join(' ')}"
 
+      self.last_guess = guess
       guess
     end
 
     def receive_result(result)
+      puts "\nGuess feedback (O = correct, X = wrong position, _ = incorrect):"
+      puts result.join(' ')
+
+      self.must_include = []
       result.each_with_index do |pos, index|
-        possible_colors[index] = [pos] if pos == 'O'
+        possible_colors[index] = [last_guess[index]] if pos == 'O'
+        possible_colors[index].delete(last_guess[index]) if %w[_ X].include?(pos)
+        must_include.push(last_guess[index]) if pos == 'X'
       end
     end
   end
