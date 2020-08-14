@@ -12,16 +12,18 @@ module Mastermind
 
     def play_game
       setup_game
-
+      end_message = "\nSorry, you lost!"
       12.times do |num|
         result = play_round(num)
         if result[:correct] == 4
-          puts "\nCorrect! You win!"
+          end_message = "\nCorrect! You win!"
           break
         else
           print_result(result)
         end
       end
+
+      puts end_message
     end
 
     private
