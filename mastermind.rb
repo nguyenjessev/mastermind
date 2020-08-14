@@ -14,14 +14,30 @@ module Mastermind
       setup_game
 
       12.times do |num|
-        print_turns(num)
+        play_round
 
-        guess = codebreaker.guess_code
-        result = verify_guess(secret_code, guess)
-        break if result
+        result = verify_guess
+        if result.correct == 4
+          puts 'Correct! You win!'
+          break
+        else
+          print_result(result)
+        end
       end
+    end
 
-      end_game
+    private
+
+    def print_result(result)
+      puts "Correct: #{result.correct}"
+      puts "Wrong position: #{result.wrong_position}"
+    end
+
+    def play_round
+      print_turns(num)
+
+      guess = codebreaker.guess_code
+      verify_guess(secret_code, guess)
     end
 
     def print_turns(num)
@@ -32,10 +48,8 @@ module Mastermind
       end
     end
 
-    def end_game; end
-
     def verify_guess(answer, guess)
-      return true if answer == guess
+      return { correct: 4, wrong_position: 0 } if answer == guess
 
       result = { correct: 0, wrong_position: 0 }
 
