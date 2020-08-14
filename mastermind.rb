@@ -156,6 +156,9 @@ module Mastermind
     end
 
     def guess_code
+      puts "\nThe CPU is thinking..."
+      sleep(3)
+
       guess = []
 
       possible_colors.each_with_index do |pos, index|
