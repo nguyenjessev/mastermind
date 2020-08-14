@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 module Mastermind
   COLORS = %w[red blue green yellow black white].freeze
 
