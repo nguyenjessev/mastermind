@@ -15,11 +15,10 @@ module Mastermind
       end_message = "\nSorry, you lost!"
       12.times do |num|
         result = play_round(num)
+        codebreaker.receive_result(result)
         if result == %w[O O O O]
           end_message = "\nCorrect! You win!"
           break
-        else
-          print_result(result)
         end
       end
 
@@ -27,11 +26,6 @@ module Mastermind
     end
 
     private
-
-    def print_result(result)
-      puts "\nGuess feedback (O = correct, X = wrong position, _ = incorrect):"
-      puts result.join(' ')
-    end
 
     def play_round(round_num)
       print_turns(round_num)
@@ -73,8 +67,26 @@ module Mastermind
     end
 
     def setup_game
-      @codebreaker = Human.new
-      @codemaker = Cpu.new
+      puts "\nWould you like to play as the codebreaker or codemaker?"
+      puts '1: Codebreaker'
+      puts '2: Codemaker'
+
+      choice = 0
+      loop do
+        choice = gets.chomp.to_i
+        break if [1, 2].include?(choice)
+
+        puts 'Invalid input, please try again.'
+      end
+
+      if choice == 1
+        @codebreaker = Human.new
+        @codemaker = Cpu.new
+      else
+        @codebreaker = Cpu.new
+        @codemaker = Human.new
+      end
+
       @secret_code = codemaker.generate_code
     end
   end
@@ -97,9 +109,14 @@ module Mastermind
     end
 
     def generate_code
-      puts 'You are the codemaker! Enter your secret code one color at a time. Valid colors are '\
+      puts "\nYou are the codemaker! Enter your secret code one color at a time. Valid colors are"\
            'red, green, blue, yellow, black, and white:'
       input_code
+    end
+
+    def receive_result(result)
+      puts "\nGuess feedback (O = correct, X = wrong position, _ = incorrect):"
+      puts result.join(' ')
     end
 
     private
@@ -121,6 +138,12 @@ module Mastermind
 
   # This class represents the CPU
   class Cpu
+    attr_accessor :possible_colors, :last_result
+
+    def initialize
+      @possible_colors = Array.new(4) { COLORS.clone }
+    end
+
     def generate_code
       code = []
       4.times do
@@ -129,6 +152,19 @@ module Mastermind
 
       puts "\nThe CPU has generated a secret code."
       code
+    end
+
+    def guess_code
+      guess = possible_colors.map(&:sample)
+      puts "CPU guess: #{guess.join(' ')}"
+
+      guess
+    end
+
+    def receive_result(result)
+      result.each_with_index do |pos, index|
+        possible_colors[index] = [pos] if pos == 'O'
+      end
     end
   end
 end
