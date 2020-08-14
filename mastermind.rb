@@ -14,11 +14,9 @@ module Mastermind
       setup_game
 
       12.times do |num|
-        play_round
-
-        result = verify_guess
-        if result.correct == 4
-          puts 'Correct! You win!'
+        result = play_round(num)
+        if result[:correct] == 4
+          puts "\nCorrect! You win!"
           break
         else
           print_result(result)
@@ -29,12 +27,12 @@ module Mastermind
     private
 
     def print_result(result)
-      puts "Correct: #{result.correct}"
-      puts "Wrong position: #{result.wrong_position}"
+      puts "\nCorrect: #{result[:correct]}"
+      puts "Wrong position: #{result[:wrong_position]}"
     end
 
-    def play_round
-      print_turns(num)
+    def play_round(round_num)
+      print_turns(round_num)
 
       guess = codebreaker.guess_code
       verify_guess(secret_code, guess)
@@ -42,7 +40,7 @@ module Mastermind
 
     def print_turns(num)
       if num < 11
-        puts "There are #{12 - num} turns remaining."
+        puts "\nThere are #{12 - num} turns remaining."
       else
         puts 'There is 1 turn remaining.'
       end
@@ -126,7 +124,7 @@ module Mastermind
         code.push(COLORS.sample)
       end
 
-      puts 'The CPU has generated a secret code.'
+      puts "\nThe CPU has generated a secret code."
       code
     end
   end
