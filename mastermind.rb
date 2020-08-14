@@ -15,7 +15,7 @@ module Mastermind
       end_message = "\nSorry, you lost!"
       12.times do |num|
         result = play_round(num)
-        if result[:correct] == 4
+        if result == %w[O O O O]
           end_message = "\nCorrect! You win!"
           break
         else
@@ -29,8 +29,8 @@ module Mastermind
     private
 
     def print_result(result)
-      puts "\nCorrect: #{result[:correct]}"
-      puts "Wrong position: #{result[:wrong_position]}"
+      puts "\nGuess feedback (O = correct, X = wrong position, _ = incorrect):"
+      puts result.join(' ')
     end
 
     def play_round(round_num)
@@ -49,22 +49,23 @@ module Mastermind
     end
 
     def verify_guess(answer, guess)
-      return { correct: 4, wrong_position: 0 } if answer == guess
+      return %w[O O O O] if answer == guess
 
-      result = { correct: 0, wrong_position: 0 }
+      result = []
 
       answer = answer.clone
       guess.each_with_index do |color, index|
         if color == answer[index]
-          result[:correct] += 1
+          result.push('O')
           answer[index] = nil
-          next
-        end
-
-        index = answer.index(color)
-        if index && answer[index] != guess[index]
-          result[:wrong_position] += 1
-          answer[index] = nil
+        else
+          index = answer.index(color)
+          if index && answer[index] != guess[index]
+            result.push('X')
+            answer[index] = nil
+          else
+            result.push('_')
+          end
         end
       end
 
