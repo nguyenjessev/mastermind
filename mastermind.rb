@@ -17,7 +17,7 @@ module Mastermind
         print_turns(num)
 
         guess = codebreaker.guess_code
-        result = verify_guess(secret_code.code, guess.code)
+        result = verify_guess(secret_code, guess)
         break if result
       end
 
@@ -40,7 +40,6 @@ module Mastermind
       result = { correct: 0, wrong_position: 0 }
 
       answer = answer.clone
-      guess = guess.clone
       guess.each_with_index do |color, index|
         if color == answer[index]
           result[:correct] += 1
@@ -51,7 +50,7 @@ module Mastermind
         index = answer.index(color)
         if index && answer[index] != guess[index]
           result[:wrong_position] += 1
-          answer[answer.index(color)] = nil
+          answer[index] = nil
         end
       end
 
@@ -68,10 +67,10 @@ module Mastermind
   # This class represents a human player
   class Human
     def input_code
-      result = Code.new
+      result = []
       4.times do |num|
         print "Position #{num + 1}: "
-        result.code[num] = input_color
+        result[num] = input_color
       end
 
       result
@@ -108,22 +107,13 @@ module Mastermind
   # This class represents the CPU
   class Cpu
     def generate_code
-      code = Code.new
+      code = []
       4.times do
-        code.code.push(COLORS.sample)
+        code.push(COLORS.sample)
       end
 
       puts 'The CPU has generated a secret code.'
       code
-    end
-  end
-
-  # This class represents a 4-color code
-  class Code
-    attr_accessor :code
-
-    def initialize
-      @code = []
     end
   end
 end
