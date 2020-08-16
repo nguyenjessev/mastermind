@@ -11,3 +11,5 @@ Ruby classes/objects, arrays, hashes, accessor methods
 
 ## What I learned
 How to use user input to change how a game runs, how to compare arrays, basic game AI, % notation
+
+[![Run on Repl.it](https://repl.it/badge/github/nguyenjessev/mastermind)](https://repl.it/github/nguyenjessev/mastermind)
